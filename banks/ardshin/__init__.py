@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 from decimal import Decimal
 from typing import Iterable
+from zoneinfo import ZoneInfo
 
 from iso4217 import iso4217
 from haralyzer import HarEntry
@@ -31,7 +32,9 @@ def extract(entries: list[HarEntry]) -> Iterable[Transaction]:
         for op in operations:
             yield Transaction(
                 type={'1': 'withdrawal', '2': 'deposit'}[op['operation']],
-                date=datetime.strptime(f"{op['valueDate']} {op['time']}", "%d.%m.%Y %H:%M"),
+                date=(datetime
+                      .strptime(f"{op['valueDate']} {op['time']}", "%d.%m.%Y %H:%M")
+                      .astimezone(ZoneInfo("Asia/Yerevan"))),
                 description=op['details'].split('\\')[-1].replace('\n', ' '),
                 account_id=account_id,
                 amount=Amount(

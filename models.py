@@ -24,7 +24,7 @@ class Transaction:
 
 @dataclass(kw_only=True)
 class CSVRow:
-    date: date
+    date: datetime | date
     amount: Decimal
     name: str
     currency: str

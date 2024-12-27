@@ -49,7 +49,7 @@ if __name__ == "__main__":
     writer.writeheader()
     writer.writerows(
         dataclasses.asdict(CSVRow(
-            date=txn.date.date(),
+            date=txn.date.replace(microsecond=0),
             amount=txn.amount.value * (1 if txn.type == 'deposit' else -1),
             name=txn.description,
             currency=txn.amount.currency,

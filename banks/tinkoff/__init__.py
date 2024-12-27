@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 from typing import Iterable
 
@@ -20,7 +20,7 @@ def extract(entries: list[HarEntry]) -> Iterable[Transaction]:
         for data in response['payload']:
             yield Transaction(
                 type='withdrawal' if data['type'] == 'Debit' else 'deposit',
-                date=datetime.fromtimestamp(data['operationTime']['milliseconds'] / 1000),
+                date=datetime.fromtimestamp(data['operationTime']['milliseconds'] / 1000).astimezone(timezone.utc),
                 description=data['description'],
                 amount=Amount(
                     value=Decimal(data['accountAmount']['value']).quantize(Decimal("0.0001")),

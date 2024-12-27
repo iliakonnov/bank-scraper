@@ -26,7 +26,7 @@ def extract(entries: list[HarEntry]) -> Iterable[Transaction]:
                     value=Decimal(data['accountAmount']['value']).quantize(Decimal("0.0001")),
                     currency=data['accountAmount']['currency']['name']
                 ),
-                external_id=data['id'],
+                external_id='tinkoff-' + data['id'],
                 account_id=f'tinkoff-{data["account"]}',
                 category=data.get('subcategory', data.get('spendingCategory', {}).get('name')) or ''
             )

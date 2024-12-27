@@ -51,7 +51,7 @@ def extract(entries: list[HarEntry]) -> Iterable[Transaction]:
                         value=abs(amount).quantize(Decimal("0.0001")),
                         currency=op['operationAmount']['currencyCode']
                     ),
-                    external_id='from-' + op['uohId'],
+                    external_id='sber-from-' + op['uohId'],
                     account_id=f'sber-{acc_id}',
                     notes=op['description'],
                 )
@@ -65,7 +65,7 @@ def extract(entries: list[HarEntry]) -> Iterable[Transaction]:
                         value=abs(amount).quantize(Decimal("0.0001")),
                         currency=op['operationAmount']['currencyCode']
                     ),
-                    external_id='to-' + op['uohId'],
+                    external_id='sber-to-' + op['uohId'],
                     account_id=f'sber-{acc_id}',
                     notes=op['description'],
                 )

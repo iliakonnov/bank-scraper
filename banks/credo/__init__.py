@@ -31,6 +31,6 @@ def extract(entries: list[HarEntry]) -> Iterable[Transaction]:
                     value=Decimal(item['debit'] or item['credit']).quantize(Decimal("0.0001")),
                     currency=item['currency']
                 ),
-                external_id=item['transactionId'],
+                external_id='credo-' + item['transactionId'],
                 account_id=f'credo-{item["accountNumber"]}-{item["currency"]}',
             )

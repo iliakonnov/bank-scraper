@@ -35,6 +35,6 @@ def extract(entries: list[HarEntry]) -> Iterable[Transaction]:
                         value=Decimal(payment['total']).quantize(Decimal("0.0001")),
                         currency='RUB',
                     ),
-                    external_id=order['id'],
+                    external_id='yaplus-' + order['id'],
                     account_id='yaplus',
                 )

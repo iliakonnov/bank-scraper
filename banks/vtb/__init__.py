@@ -27,7 +27,7 @@ def extract(entries: list[HarEntry]) -> Iterable[Transaction]:
                     value=Decimal(op['operationAmount']['sum']).quantize(Decimal("0.0001")),
                     currency=op['operationAmount']['currency']
                 ),
-                external_id=op['operationId'],
+                external_id='vtb-' + op['operationId'],
                 account_id=f'vtb-{op["accountProductId"]}',
                 category=op.get('parentCategory', {}).get('name') or '',
             )

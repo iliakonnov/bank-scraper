@@ -21,9 +21,12 @@ accounts = {
     'ardshin-2470087002440020': False,  # clone of A-VISA
     'ardshin-4454300003735591': 'A-VISA',
 
-    'yabank-PAY_CARD': 'Y-Card',
+    'yabank-PAY_CARD': 'Y-Debit',
     'yaplus': 'Y-Plus',
 
+    'sber-ct-account:1400001268081507': 'S-Debit',
+    'sber-card:1400003861520378': 'S-Credit',
+    'sber-account:3700033421951600': 'S-Account',
 }
 
 if __name__ == "__main__":
@@ -38,6 +41,7 @@ if __name__ == "__main__":
         banks.ardshin.extract(entries),
         banks.yabank.extract(entries),
         banks.yaplus.extract(entries),
+        banks.sber.extract(entries),
     )
     transactions = sorted(
         {txn.external_id: txn for txn in transactions}.values(),
@@ -45,7 +49,7 @@ if __name__ == "__main__":
     )
 
     fields = [i.name for i in dataclasses.fields(CSVRow)]
-    writer = csv.DictWriter(sys.stderr, fields)
+    writer = csv.DictWriter(sys.stdout, fields)
     writer.writeheader()
     writer.writerows(
         dataclasses.asdict(CSVRow(

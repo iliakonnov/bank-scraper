@@ -19,11 +19,11 @@ def extract(entries: list[HarEntry]) -> Iterable[Transaction]:
         request = json.loads(entry.request.text)
         if request['operationName'] != 'GetTransactionFeedView':
             continue
-        if request['variables'].get('filterType') != 'PAY_CARD':
-            continue
         response: Model = json.loads(entry.response.text)
         for item in response['data']['getTransactionsFeedView']['items']:
             if item['statusCode'] != 'CLEAR':
+                continue
+            if not item.get('amount', {}).get('money'):
                 continue
             yield Transaction(
                 type='withdrawal' if item['directionV2'] == 'DEBIT' else 'deposit',

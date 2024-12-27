@@ -1,1 +1,1 @@
-from . import tinkoff, ardshin, yabank, yaplus, sber
+from . import tinkoff, ardshin, yabank, yaplus, sber, vtb, credo

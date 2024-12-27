@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, date
 from decimal import Decimal
 from typing import Literal
@@ -19,11 +19,13 @@ class Transaction:
     account_id: str
     external_id: str
     notes: str = ''
-    foreign_amount: Amount | None = None
+    category: str = ''
+    tags: list['str'] = field(default_factory=list)
 
 
 @dataclass(kw_only=True)
 class CSVRow:
+    id: str
     date: datetime | date
     amount: Decimal
     name: str

@@ -5,31 +5,16 @@ import sys
 import csv
 
 import haralyzer
+import ftfy
+from pyjson5 import pyjson5
 
 import banks
 from models import CSVRow
 
-accounts = {
-    'tinkoff-5696181790': 'T-Debit',
-    'tinkoff-0763313608': 'T-Credit',
-    'tinkoff-5727532300': False,  # Junior
-    'tinkoff-8246809001': 'T-Account',
-    'tinkoff-6109852795': 'T-Mobile',
-
-    'ardshin-2470087002440000': 'A-AMD',
-    'ardshin-2470087002440010': 'A-USD',
-    'ardshin-2470087002440020': False,  # clone of A-VISA
-    'ardshin-4454300003735591': 'A-VISA',
-
-    'yabank-PAY_CARD': 'Y-Debit',
-    'yaplus': 'Y-Plus',
-
-    'sber-ct-account:1400001268081507': 'S-Debit',
-    'sber-card:1400003861520378': 'S-Credit',
-    'sber-account:3700033421951600': 'S-Account',
-}
-
 if __name__ == "__main__":
+    with open('accounts.json5', 'r') as f:
+        accounts = pyjson5.load(f)
+
     entries = []
     for fname in sys.argv[1:]:
         with open(fname, 'r') as f:
@@ -42,6 +27,8 @@ if __name__ == "__main__":
         banks.yabank.extract(entries),
         banks.yaplus.extract(entries),
         banks.sber.extract(entries),
+        banks.vtb.extract(entries),
+        banks.credo.extract(entries),
     )
     transactions = sorted(
         {txn.external_id: txn for txn in transactions}.values(),
@@ -53,14 +40,15 @@ if __name__ == "__main__":
     writer.writeheader()
     writer.writerows(
         dataclasses.asdict(CSVRow(
+            id=txn.external_id,
             date=txn.date.replace(microsecond=0),
             amount=txn.amount.value * (1 if txn.type == 'deposit' else -1),
-            name=txn.description,
+            name=ftfy.fix_encoding(txn.description),
             currency=txn.amount.currency,
-            category='',
-            tags='',
+            category=ftfy.fix_encoding(txn.category),
+            tags=ftfy.fix_encoding('|'.join(txn.tags)),
             account=accounts.get(txn.account_id, txn.account_id),
-            notes=txn.notes,
+            notes=ftfy.fix_encoding(txn.notes),
         ))
         for txn in transactions
         if accounts.get(txn.account_id) is not False

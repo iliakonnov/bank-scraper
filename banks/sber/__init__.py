@@ -4,6 +4,8 @@ from decimal import Decimal
 from typing import Iterable
 from zoneinfo import ZoneInfo
 
+import ftfy
+from ftfy import fix_encoding
 from haralyzer import HarEntry
 
 from banks.sber.models import Model

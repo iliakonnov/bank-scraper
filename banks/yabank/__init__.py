@@ -25,6 +25,7 @@ def extract(entries: list[HarEntry]) -> Iterable[Transaction]:
                 continue
             if not item.get('amount', {}).get('money'):
                 continue
+            # TODO: Duplicates
             yield Transaction(
                 type='withdrawal' if item['directionV2'] == 'DEBIT' else 'deposit',
                 date=datetime.fromisoformat(item['date']),
@@ -33,6 +34,6 @@ def extract(entries: list[HarEntry]) -> Iterable[Transaction]:
                     value=Decimal(item['amount']['money']['amount']).quantize(Decimal("0.0001")),
                     currency=item['amount']['money']['currency'],
                 ),
-                external_id='yabank-' + item['id'],
+                external_id='yabank-' + '::'.join(item['id'].split('::')[3:]),
                 account_id=f'yabank-PAY_CARD',
             )
